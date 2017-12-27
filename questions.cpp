@@ -1,4 +1,4 @@
-#include "basewindow.h"
+﻿#include "basewindow.h"
 #include "questions.h"
 #include "test.h"
 #include "identification.h"
@@ -25,6 +25,7 @@ Questions::Questions(QWidget *parent) :
 
 Questions::Questions(bool choose)
 {
+    setWindowTitle("Тестирование");
     resize(1024, 768);      // стартовые размеры окна
     Start();
     training = choose;
@@ -66,7 +67,7 @@ void Questions::Start()
     back->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     connect(back, SIGNAL(clicked()), this, SLOT(Back()));
 
-    QPushButton *next = new QPushButton("Вперёд", this);
+    next = new QPushButton("Вперёд", this);
     next->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     connect(next, SIGNAL(clicked()), this, SLOT(Go_On()));
 
@@ -87,12 +88,6 @@ void Questions::Start()
     Read();         // считем и создадим тест
     Output();       // выведем первое задание
 }
-
-int Number = 0, Quantity;                               // Number для обозначния номера задания, Quantity для обозначения всего количества заданий                                  // для обозначения типа тестирования, и знания нужен ли нам словарь
-QVector < QVector <QString> > task;                    // тут мы хроним весь наш тест (от темы, до ответов)
-QVector <QString> reply;                   // для хранения ответов пользователя
-QVector <bool> action;                                  // для быстрого подсчёта (необходимо для прекращения теста при all, error, portion
-int fail = 0;                                               // для хранения количества неправильных ответов
 
 void Questions::Read()
 {
@@ -247,7 +242,7 @@ void Questions::Sample(QVector < QVector <QString> > matrix, int from, int befor
     // генерируем номер задания без повторов
     for (int i = 0; i < used_question.size(); i++)
     {
-        used_question[i] = i;
+        used_question[i] = i + from;
     }
     for (int i = 0, number; i < used_question.size(); i++)
     {
@@ -255,9 +250,17 @@ void Questions::Sample(QVector < QVector <QString> > matrix, int from, int befor
         std::swap(used_question[i], used_question[number]);
     }
 
+    // запишем задание в создаваемый тест
+    if (value != 0)
     for (int i = 0; i < value && i < befor; i++)
     {
-        task.append(matrix[used_question[i] + from]);            // запишем задание в создаваемый тест
+        task.append(matrix[used_question[i]]);
+    }
+    // перемешаем задания между собой
+    for (int i = 0, number; i < task.size(); i++)
+    {
+        number = qrand() % task.size();
+        std::swap(task[i], task[number]);
     }
 }
 
@@ -275,9 +278,17 @@ void Questions::Create(QVector<QString> topics, int simple, int basic, int hight
 
     for (int i = 0; i < topics.size(); i++)
     {
+        if (i == topics.size() - 1)     // если это последняя тема из используемых
+        {
+            my_simple = simple - my_simple * i;     // количество вопросов равно тому что осталось из имеющегося
+            my_basic = basic - my_basic * i;
+            my_hight = hight - my_hight * i;
+        }
+
         Filling(topics[i], matrix, separator1, separator2);
         if (separator2 == -1)
             separator2 = matrix.size();
+
         // запишем задания разной степени сложности
         Sample(matrix, 0, separator1, my_simple);
         Sample(matrix, separator1, separator2, my_basic);
@@ -286,13 +297,6 @@ void Questions::Create(QVector<QString> topics, int simple, int basic, int hight
         // очищаем временные элементы
         separator1 = separator2 = -1;
         matrix.clear();
-
-        if (i == topics.size() - 1)     // если это последняя тема из используемых
-        {
-            my_simple = simple - my_simple * (i - 1);     // количество вопросов равно тому что осталось из имеющегося
-            my_basic = basic - my_basic * (i - 1);
-            my_hight = hight - my_hight * (i - 1);
-        }
     }
 
     reply.resize(Quantity);     // резервируем область для ответов
@@ -313,9 +317,10 @@ void Questions::Back()
 {
     // переход к предыдущему вопросу или возможность выхода в главное меню
     Number--;
-    if (Number >= 0 && Number < 10000)
+    if (Number >= 0)
     {
         info->setVisible(true);
+        reply[Number + 1] = answer->text();      // запишим ответ на вопрос
         Output();
         answer->setText(reply[Number]);     // выводим ответ который пользователь дал на это задание
     }
@@ -328,7 +333,9 @@ void Questions::Back()
     }
     if (Number == -2)
     {
-        // тут можно сделать переход к учебной инфформации или демонстрации
+        text->setText("<center><font size = 5>Ваши результаты аннулированны</font>");
+        next->setVisible(false);
+        back->setVisible(false);
     }
 }
 
@@ -336,13 +343,7 @@ void Questions::Go_On()
 {
     // переход к следующему вопросу или возможность закончить тестирование
     Number++;
-    if (Number == 0)
-    {
-        info->setVisible(true);
-        reply[Number] = answer->text();
-        Output();
-    }
-    else if (Number <= Quantity)
+    if (Number <= Quantity)
     {
         info->setVisible(true);
         reply[Number - 1] = answer->text();      // запишим ответ на вопрос
@@ -351,7 +352,10 @@ void Questions::Go_On()
             Intermediate();
         }
         if (Number < Quantity)
-             Output();      // выведем следующее задание
+        {
+            Output();      // выведем следующее задание
+            answer->setText(reply[Number]);     // выводим ответ который пользователь дал на это задание
+        }
     }
     if (Number == Quantity)
     {
@@ -359,22 +363,17 @@ void Questions::Go_On()
         text->setText("<font size = 5><center> Если вы действительно хотите досрочно закончить тестирование и узнать свои результаты - нажмите кнопку Вперёд</font>");
         answer->setVisible(false);
     }
-    if (Number == Quantity + 1)
+    else if (Number > Quantity)
     {
-        Number += 10000;     // добавляем не реальное значение, чтобы заблокировать возможность возврата к заданиям
-        Result(true);        // выведем результат
+        next->setVisible(false);
         back->setVisible(false);
-    }
-    else if (Number > 10000)
-    {
-         // тут можно сделать переход к учебной инфформации или демонстрации
+        Result(true);        // выведем результат
     }
 }
 
 bool Questions::Substring(int value, int number)
 {
     QString stroka = reply[number], symbol = QString::number(value);
-    qDebug() << stroka << symbol;
     for (int i = 0; i < stroka.size(); i++)
     {
         if (stroka[i] == symbol[0])
@@ -413,7 +412,7 @@ void Questions::Totals()
         // вычислим сколько начислим за задание исходя из колличества правильных и не правильных
         if (wrong == 0 && correct == right)     // если неправильных нет и все правильные - максимальное количество баллов
             points += temp;
-        else if (wrong == 0 && correct < right && reply[i] != "")     // если неправильных нет и правильных меньше чем нужно
+        else if (wrong == 0 && correct < right && correct != 0)     // если неправильных нет и правильных меньше чем нужно
             points += temp * 0.75;
         else if (wrong < correct && correct >= (right / 2))     // если неправильных меньше чем правильных и правильных больше половины
             points += temp * 0.5;
@@ -438,7 +437,8 @@ void Questions::Result()
     // функция перенаправляет окончание теста по времени в вычисление результата
     Result(false);
     answer->setVisible(false);
-    Number += 10000;
+    next->setVisible(false);
+    back->setVisible(false);
 }
 
 void Questions::Result(bool go_out)
@@ -516,7 +516,6 @@ void Questions::ChekForCompletion()
     if ((errors >= fail && error) || (errors == 0 && all))
     {
         // завершим тестирование без вопроса о желании пользователя выйти
-        Number+=10000;
         answer->setVisible(false);
         Result(false);
     }

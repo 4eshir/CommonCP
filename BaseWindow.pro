@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     demo.cpp \
     test.cpp \
     questions.cpp \
-    identification.cpp
+    identification.cpp \
+    help.cpp
 
 HEADERS  += basewindow.h \
     theory.h \
@@ -41,7 +42,8 @@ HEADERS  += basewindow.h \
     demo.h \
     test.h \
     questions.h \
-    identification.h
+    identification.h \
+    help.h
 
 FORMS    +=
 

@@ -1,14 +1,14 @@
-#include "demo.h"
+﻿#include "demo.h"
 #include "basewindow.h"
 
 Demo::Demo(QWidget *parent)
     : BaseWindow(parent)
 {
-
+    setWindowTitle("Демонстрация");
     this->resize(startSizes::width, startSizes::height);
     this->setWindowTitle("Демонстрация");
     label = new QLabel("<p style = 'text-align: center;'><h3> Выберите задачу из предложенных ниже </h3></p>", this);
-    label->setGeometry(QRect(10, 10, startSizes::width, startSizes::height / 4));
+    label->setGeometry(QRect(20, 20, startSizes::width, startSizes::height / 4));
     buttonTask1 = new QPushButton("Задача 1 — поиск наибольшей общей подстроки", this);
     buttonTask1->setGeometry(QRect(startSizes::width / 4, startSizes::height / 4, startSizes::width / 2, startSizes::height - 550));
     buttonTask2 = new QPushButton("Задача 2 — поиск наименьшего числа перемножений матриц", this);

@@ -1,4 +1,4 @@
-#include "basewindow.h"
+﻿#include "basewindow.h"
 #include "test.h"
 #include "questions.h"
 #include <QApplication>
@@ -205,6 +205,7 @@ void Test::Record()
     QFile file("training settings.txt");
     file.open(QIODevice::WriteOnly);
     QTextStream writen(&file);
+    writen.setCodec("UTF8");
 
     // cначала записываем темы
     for (int i = 0; i != usedTopics->count(); i++)

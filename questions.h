@@ -45,8 +45,15 @@ private slots:
     bool Substring(int value, int number);
 
 private:
-    QPushButton *back;
-    bool training = true;
+    int Number = 0;                    // Number для обозначния номера задания,
+    int Quantity;                      // Quantity для обозначения всего количества заданий
+    bool training = true;                       // для обозначения типа тестирования, и знания нужен ли нам словарь
+    QVector < QVector <QString> > task;         // тут мы хроним весь наш тест (от темы, до ответов)
+    QVector <QString> reply;                   // для хранения ответов пользователя
+    QVector <bool> action;                     // для быстрого подсчёта (необходимо для прекращения теста при all, error, portion
+    int fail = 0;                              // для хранения количества неправильных ответов
+    QPushButton *back;                         // кнопка для перехода назад по вопросам
+    QPushButton *next;                         // кнопка для перехода вперёд по вопросам
 };
 
 #endif // QUESTIONS_H

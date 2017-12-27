@@ -23,7 +23,8 @@ public:
     QAction *showTheory;
     QAction *refreshList;
     QAction *startDemo;
-    QAction *startTest;
+    QAction *startTrainTest;
+    QAction *startControlTest;
     QAction *showHelp;
 
 
@@ -31,9 +32,8 @@ public slots:
     void actionShowTheory();
     void actionShowHelp();
     void actionStartDemo();
-    void actionStartTest();
-
-private:
+    void actionStartTrainTest();
+    void actionStartControlTest();
 
 };
 

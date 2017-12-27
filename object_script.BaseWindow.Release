@@ -13,6 +13,7 @@ INPUT(
 ./release/test.o
 ./release/questions.o
 ./release/identification.o
+./release/help.o
 ./release/moc_basewindow.o
 ./release/moc_theory.o
 ./release/moc_abstractview.o
@@ -23,4 +24,5 @@ INPUT(
 ./release/moc_test.o
 ./release/moc_questions.o
 ./release/moc_identification.o
+./release/moc_help.o
 );

@@ -13,6 +13,7 @@ INPUT(
 ./debug/test.o
 ./debug/questions.o
 ./debug/identification.o
+./debug/help.o
 ./debug/moc_basewindow.o
 ./debug/moc_theory.o
 ./debug/moc_abstractview.o
@@ -23,4 +24,5 @@ INPUT(
 ./debug/moc_test.o
 ./debug/moc_questions.o
 ./debug/moc_identification.o
+./debug/moc_help.o
 );

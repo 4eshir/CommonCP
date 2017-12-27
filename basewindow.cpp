@@ -1,8 +1,11 @@
-#include "basewindow.h"
+﻿#include "basewindow.h"
 #include "Demo.h"
 #include "ui_basewindow.h"
 #include "theory.h"
 #include "test.h"
+#include "questions.h"
+#include "identification.h"
+#include "help.h"
 #include <QDebug>
 
 BaseWindow::BaseWindow(QWidget *parent) :
@@ -31,16 +34,24 @@ void BaseWindow::actionStartDemo()
     window->show();
 }
 
-void BaseWindow::actionStartTest()
+void BaseWindow::actionStartTrainTest()
 {
-    Test *window = new Test();
+    Test *window = new Test(true);
+    this->close();
+    window->show();
+}
+
+void BaseWindow::actionStartControlTest()
+{
+    Identification *window = new Identification();
     this->close();
     window->show();
 }
 
 void BaseWindow::actionShowHelp()
 {
-
+    Help *window = new Help();
+    window->show();
 }
 
 void BaseWindow::createMenus()
@@ -58,19 +69,22 @@ void BaseWindow::createMenus()
     connect(startDemo, SIGNAL(triggered()), this, SLOT(actionStartDemo()));
     mnDemo->addAction(startDemo); //добавили экшн в меню
     //-------------------------------------------------------------------//
-    //----------------РџСѓРЅРєС‚ РјРµРЅСЋ РўР•РЎРўРР РћР’РђРќРР•----------------------------//
-    mnTest = new QMenu("Тест"); // СЃРѕР·РґР°РµРј РјРµРЅСЋ РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ
-    startTest = new QAction("Начать тестирование", this);
-    connect(startTest, SIGNAL(triggered()), this, SLOT(actionStartTest()));
-    mnTest->addAction(startTest);
+    //----------------Меню ТЕСТ----------------------------//
+    mnTest = new QMenu("Тест"); // пункт меню
+    startTrainTest = new QAction("Начать учебное тестирование", this);
+    connect(startTrainTest, SIGNAL(triggered()), this, SLOT(actionStartTrainTest()));
+    startControlTest = new QAction("Начать контрольное тестирование", this);
+    connect(startControlTest, SIGNAL(triggered()), this, SLOT(actionStartControlTest()));
+    mnTest->addAction(startTrainTest);
+    mnTest->addAction(startControlTest);
     //-------------------------------------------------------------------//
-    //------------------РџСѓРЅРєС‚ РјРµРЅСЋ РЎРџР РђР’РљРђ-------------------------------//
-    mnHelp = new QMenu("Справка"); // СЃРѕР·РґР°РµРј РјРµРЅСЋ РЎРїСЂР°РІРєР°
+    //------------------Меню СПРАВКА-------------------------------//
+    mnHelp = new QMenu("Справка"); // пункт меню
     showHelp = new QAction("Показать справку", this);
     connect(showHelp, SIGNAL(triggered()), this, SLOT(actionShowHelp()));
     mnHelp->addAction(showHelp);
     //-------------------------------------------------------------------//
-    menuBar()->addMenu(mnTheory); // Р”РѕР±Р°РІР»СЏРµРј РїСѓРЅРєС‚С‹ РјРµРЅСЋ РІ menuBar, С‚.Рµ. С‚Рµ, РєРѕС‚РѕСЂС‹Рµ Р±СѓРґСѓС‚ РѕС‚РѕР±СЂР°Р¶Р°С‚СЊСЃСЏ РІ РіР». РѕРєРЅРµ
+    menuBar()->addMenu(mnTheory);
     menuBar()->addMenu(mnDemo);
     menuBar()->addMenu(mnTest);
     menuBar()->addMenu(mnHelp);
