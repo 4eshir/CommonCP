@@ -32,7 +32,6 @@ public slots:
     void actionRefreshList();
 
 private:
-    void createMenus();
     void createWidgets();
 
     void setTextFromFile(QString str);

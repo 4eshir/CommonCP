@@ -56,9 +56,9 @@ static const uint qt_meta_data_Theory[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,   29,    2, 0x08 /* Private */,
-       4,    1,   32,    2, 0x08 /* Private */,
-       5,    0,   35,    2, 0x08 /* Private */,
+       1,    1,   29,    2, 0x0a /* Public */,
+       4,    1,   32,    2, 0x0a /* Public */,
+       5,    0,   35,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3,    2,
