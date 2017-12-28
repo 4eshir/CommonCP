@@ -274,7 +274,7 @@ void Test::Go_On()
         if (completeness)       // если все данные правильные можно их записывать в файл и перейти к тестированию
         {
             Record();           // запишем данные для учебного тестирования
-            Questions *window = new Questions(choose);
+            Questions *window = new Questions();
             window->show();
             this->close();
         }
